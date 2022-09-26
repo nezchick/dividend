@@ -1,5 +1,6 @@
 package com.seung.dividend.service;
 
+import com.seung.dividend.exception.impl.AlreadyExistUserException;
 import com.seung.dividend.model.Auth;
 import com.seung.dividend.model.MemberEntity;
 import com.seung.dividend.persisit.MemberRepository;
@@ -10,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.rmi.AlreadyBoundException;
 
 @Slf4j
 @Service
@@ -28,7 +31,7 @@ public class MemberService implements UserDetailsService {
     public MemberEntity register(Auth.SignUp member) {
         boolean exists = this.memberRepository.existsByUsername(member.getUsername());
         if(exists) {
-            throw new RuntimeException("이미 사용 중인 아이디 입니다.");
+            throw new AlreadyExistUserException();
         }
 
         member.setPassword(this.passwordEncoder.encode(member.getPassword()));
